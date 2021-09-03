@@ -34,6 +34,17 @@ import java.sql.SQLException;
 
 public class XorBot {
 
+    public static void main(String[] args) throws LoginException {
+        if (args.length == 0) {
+            throw new IllegalArgumentException("Token was not provided.");
+        }
+
+        JDABuilder jdaBuilder = JDABuilder.createDefault(args[0]);
+
+        XorBot app = new XorBot();
+        app.run(jdaBuilder);
+    }
+
     public void run(JDABuilder jdaBuilder) throws LoginException {
         BasicConfigurator.configure();
         Logger logger = JDALogger.getLog("DISCORD-BOT");
