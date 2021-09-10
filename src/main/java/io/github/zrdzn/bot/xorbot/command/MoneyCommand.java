@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Enixor
+ * Copyright (c) 2021 zrdzn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.enixor.bot.xorbot.command;
+package io.github.zrdzn.bot.xorbot.command;
 
-import io.github.enixor.bot.xorbot.user.UserService;
+import io.github.zrdzn.bot.xorbot.user.UserService;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;

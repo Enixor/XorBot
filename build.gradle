@@ -3,7 +3,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
-group 'io.github.enixor.bot'
+group 'io.github.zrdzn.bot'
 version '1.0'
 
 sourceCompatibility = '1.16'
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.slf4j:slf4j-log4j12:1.7.29")
+    implementation('org.slf4j:slf4j-log4j12:1.7.32')
 
     implementation("org.mariadb.jdbc:mariadb-java-client:2.7.4")
 
