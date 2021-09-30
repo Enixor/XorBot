@@ -46,7 +46,7 @@ public class MoneyCommand implements Command {
 
     @Override
     public Optional<String> getUsage() {
-        return Optional.of("!money [get/set/add/subtract] [<amount>] [<mention>]");
+        return Optional.of(String.format("!%s [get/set/add/subtract] [<amount>] [<mention>]", this.getName()));
     }
 
     @Override
