@@ -8,4 +8,4 @@ updates:
     open-pull-requests-limit: 10
     ignore:
       - dependency-name: net.dv8tion:JDA
-        update-types: [major]
+        update-types: ["version-update:semver-major"]
