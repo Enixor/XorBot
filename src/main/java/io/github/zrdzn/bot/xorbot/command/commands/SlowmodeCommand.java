@@ -15,8 +15,8 @@
  */
 package io.github.zrdzn.bot.xorbot.command.commands;
 
-import io.github.zrdzn.bot.xorbot.XorBot;
 import io.github.zrdzn.bot.xorbot.command.Command;
+import io.github.zrdzn.bot.xorbot.embed.EmbedHelper;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -46,7 +46,7 @@ public class SlowmodeCommand implements Command {
         TextChannel channel = event.getTextChannel();
 
         if (!event.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
-            channel.sendMessageEmbeds(XorBot.NO_PERMISSIONS_EMBED).queue();
+            channel.sendMessageEmbeds(EmbedHelper.NO_PERMISSIONS_EMBED).queue();
             return;
         }
 

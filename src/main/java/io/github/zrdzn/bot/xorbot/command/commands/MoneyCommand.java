@@ -15,15 +15,13 @@
  */
 package io.github.zrdzn.bot.xorbot.command.commands;
 
-import io.github.zrdzn.bot.xorbot.XorBot;
 import io.github.zrdzn.bot.xorbot.command.Command;
+import io.github.zrdzn.bot.xorbot.embed.EmbedHelper;
 import io.github.zrdzn.bot.xorbot.user.UserService;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -59,10 +57,9 @@ public class MoneyCommand implements Command {
         Member member = event.getMember();
         if (optionList.isEmpty()) {
             this.userService.getMoney(member.getIdLong()).thenAcceptAsync(money ->
-                    channel.sendMessageEmbeds(new EmbedBuilder()
-                        .setTimestamp(Instant.now())
-                        .addField("Account balance", String.valueOf(money), false)
-                        .build()).queue());
+                channel.sendMessageEmbeds(EmbedHelper.info()
+                    .addField("Account balance", String.valueOf(money), false)
+                    .build()).queue());
 
             return;
         }
@@ -77,7 +74,7 @@ public class MoneyCommand implements Command {
         long amount = 0L;
         if (!optionList.get(0).equalsIgnoreCase("get")) {
             if (optionList.size() == 2) {
-                channel.sendMessageEmbeds(XorBot.NO_MENTIONED_USER).queue();
+                channel.sendMessageEmbeds(EmbedHelper.NO_MENTIONED_USER).queue();
                 return;
             }
 
@@ -95,7 +92,7 @@ public class MoneyCommand implements Command {
 
         member = event.getMessage().getMentionedMembers().get(0);
         if (member == null) {
-            channel.sendMessageEmbeds(XorBot.NO_MENTIONED_USER).queue();
+            channel.sendMessageEmbeds(EmbedHelper.NO_MENTIONED_USER).queue();
             return;
         }
 
@@ -112,10 +109,9 @@ public class MoneyCommand implements Command {
         };
 
         updatedAccountBalance.thenAccept(money ->
-                channel.sendMessageEmbeds(new EmbedBuilder()
-                    .setTimestamp(Instant.now())
-                    .addField("Account balance", String.valueOf(money < 0 ? 0L : money), false)
-                    .build()).queue());
+            channel.sendMessageEmbeds(EmbedHelper.info()
+                .addField("Account balance", String.valueOf(money < 0 ? 0L : money), false)
+                .build()).queue());
     }
 
 }
