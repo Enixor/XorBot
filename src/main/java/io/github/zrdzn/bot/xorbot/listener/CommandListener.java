@@ -27,11 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class MessageReceivedListener extends ListenerAdapter {
+public class CommandListener extends ListenerAdapter {
 
     private final CommandRegistry commandRegistry;
 
-    public MessageReceivedListener(CommandRegistry commandRegistry) {
+    public CommandListener(CommandRegistry commandRegistry) {
         this.commandRegistry = commandRegistry;
     }
 
@@ -64,4 +64,5 @@ public class MessageReceivedListener extends ListenerAdapter {
 
         CompletableFuture.runAsync(() -> commandMap.get(commandName).execute(event, optionList));
     }
+
 }

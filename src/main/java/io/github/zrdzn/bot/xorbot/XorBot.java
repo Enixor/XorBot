@@ -20,7 +20,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import io.github.zrdzn.bot.xorbot.command.CommandRegistry;
 import io.github.zrdzn.bot.xorbot.command.HelpCommand;
 import io.github.zrdzn.bot.xorbot.command.MoneyCommand;
-import io.github.zrdzn.bot.xorbot.listener.MessageReceivedListener;
+import io.github.zrdzn.bot.xorbot.listener.CommandListener;
 import io.github.zrdzn.bot.xorbot.user.UserRepository;
 import io.github.zrdzn.bot.xorbot.user.UserService;
 import io.github.zrdzn.bot.xorbot.user.XorUserService;
@@ -81,7 +81,7 @@ public class XorBot {
         logger.info("Registered all default commands.");
 
         logger.info("Registering listeners...");
-        jdaBuilder.addEventListeners(new MessageReceivedListener(commandRegistry)).build();
+        jdaBuilder.addEventListeners(new CommandListener(commandRegistry)).build();
         logger.info("Registered all listeners. JDA Built, ready to go.");
     }
 
