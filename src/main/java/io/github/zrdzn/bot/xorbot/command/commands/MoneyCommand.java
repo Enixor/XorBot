@@ -19,8 +19,8 @@ import io.github.zrdzn.bot.xorbot.XorBot;
 import io.github.zrdzn.bot.xorbot.command.Command;
 import io.github.zrdzn.bot.xorbot.user.UserService;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
@@ -55,11 +55,9 @@ public class MoneyCommand implements Command {
     public void execute(MessageReceivedEvent event, List<String> optionList) {
         TextChannel channel = event.getTextChannel();
 
-        User user;
+        Member member = event.getMember();
         if (optionList.isEmpty()) {
-            user = event.getAuthor();
-
-            this.userService.getMoney(user.getIdLong()).thenAcceptAsync(money ->
+            this.userService.getMoney(member.getIdLong()).thenAcceptAsync(money ->
                     channel.sendMessageEmbeds(new EmbedBuilder().addField("Account balance", String.valueOf(money), false).build()).queue());
 
             return;
@@ -91,15 +89,15 @@ public class MoneyCommand implements Command {
             }
         }
 
-        user = event.getMessage().getMentionedUsers().get(0);
-        if (user == null) {
+        member = event.getMessage().getMentionedMembers().get(0);
+        if (member == null) {
             channel.sendMessageEmbeds(XorBot.NO_MENTIONED_USER).queue();
             return;
         }
 
-        long userId = user.getIdLong();
+        long userId = member.getIdLong();
 
-        this.userService.createUser(userId, user.getName(), 0L);
+        this.userService.createUser(userId, member.getUser().getName(), 0L);
 
         CompletableFuture<Long> updatedAccountBalance = switch (optionList.get(0).toLowerCase(Locale.ROOT)) {
             case "get" -> this.userService.getMoney(userId);
