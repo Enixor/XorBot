@@ -66,8 +66,7 @@ public class XorBot {
                 logger.info("Created new table 'users'.");
             }
         } catch (SQLException exception) {
-            logger.error("Could not create-if-not-exists table 'users'. Something went wrong.");
-            exception.printStackTrace();
+            logger.error("Could not create-if-not-exists table 'users'. Something went wrong.", exception);
             return;
         }
 
