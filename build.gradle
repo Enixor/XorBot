@@ -32,4 +32,8 @@ dependencies {
 
 shadowJar {
     archiveFileName = "${archiveBaseName.get()} v${archiveVersion.get()}.jar"
+
+    manifest {
+        attributes "Main-Class": "io.github.zrdzn.bot.xorbot.XorBot"
+    }
 }
