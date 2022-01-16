@@ -4,10 +4,10 @@ import java.awt.Color;
 
 public enum EmbedType {
 
-    INFORMATION(Color.BLUE),
-    MODERATION(Color.GREEN),
-    ERROR(Color.RED),
-    LOG(Color.BLUE);
+    INFORMATION(Color.decode("#4169e1")),
+    MODERATION(Color.decode("#32cd32")),
+    ERROR(Color.decode("#ff6347")),
+    LOG(Color.decode("#4169e1"));
 
     private final Color color;
 
