@@ -20,6 +20,7 @@ import io.github.zrdzn.bot.xorbot.command.CommandRegistry;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +50,8 @@ public class HelpCommand implements Command {
     @Override
     public void execute(MessageReceivedEvent event, List<String> optionList) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
+
+        embedBuilder.setTimestamp(Instant.now());
 
         this.commandRegistry.getCommands().values()
                 .forEach(command -> embedBuilder.addField(command.getName(), command.getDescription().orElse("<None>"), false));

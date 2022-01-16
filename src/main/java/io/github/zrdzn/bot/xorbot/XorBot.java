@@ -38,11 +38,20 @@ import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.Instant;
 
 public class XorBot {
 
-    public static final MessageEmbed NO_PERMISSIONS_EMBED = new EmbedBuilder().setColor(Color.RED).setDescription("No permissions.").build();
-    public static final MessageEmbed NO_MENTIONED_USER = new EmbedBuilder().setColor(Color.RED).setDescription("You need to mention someone that is on this server.").build();
+    public static final MessageEmbed NO_PERMISSIONS_EMBED = new EmbedBuilder()
+        .setColor(Color.RED)
+        .setTimestamp(Instant.now())
+        .setDescription("No permissions.")
+        .build();
+    public static final MessageEmbed NO_MENTIONED_USER = new EmbedBuilder()
+        .setColor(Color.RED)
+        .setTimestamp(Instant.now())
+        .setDescription("You need to mention someone that is on this server.")
+        .build();
 
     public static void main(String[] args) throws LoginException {
         if (args.length == 0) {
