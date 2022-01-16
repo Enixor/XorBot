@@ -18,3 +18,6 @@ if reason is specified, duration must be after reason\
 
 #### Events
 - modlog on specified channel
+
+#### Other
+- embeds should have colors, and maybe authors/footers
