@@ -15,19 +15,20 @@
  */
 package io.github.zrdzn.bot.xorbot.command;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CommandRegistry {
 
-    private final Map<String, Command> commandMap = new HashMap<>();
+    private final Map<String, Command> commands = new HashMap<>();
 
     public void register(Command command) {
-        this.commandMap.put(command.getName(), command);
+        this.commands.put(command.getName(), command);
     }
 
-    public Map<String, Command> getCommandMap() {
-        return this.commandMap;
+    public Map<String, Command> getCommands() {
+        return Collections.unmodifiableMap(this.commands);
     }
 
 }

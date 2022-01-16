@@ -50,7 +50,7 @@ public class HelpCommand implements Command {
     public void execute(MessageReceivedEvent event, List<String> optionList) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
-        this.commandRegistry.getCommandMap().values()
+        this.commandRegistry.getCommands().values()
                 .forEach(command -> embedBuilder.addField(command.getName(), command.getDescription().orElse("<None>"), false));
 
         event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();

@@ -71,7 +71,7 @@ public class CommandListener extends ListenerAdapter {
             return;
         }
 
-        Map<String, Command> commandMap = this.commandRegistry.getCommandMap();
+        Map<String, Command> commandMap = this.commandRegistry.getCommands();
         if (!commandMap.containsKey(commandName)) {
             event.getChannel().sendMessage("Provided command does not exist in the command registry. Check !help for the command list.").queue();
             return;
