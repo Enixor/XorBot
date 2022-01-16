@@ -15,6 +15,7 @@
  */
 package io.github.zrdzn.bot.xorbot.command.commands;
 
+import io.github.zrdzn.bot.xorbot.XorBot;
 import io.github.zrdzn.bot.xorbot.command.Command;
 import io.github.zrdzn.bot.xorbot.user.UserService;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -74,7 +75,7 @@ public class MoneyCommand implements Command {
         long amount = 0L;
         if (!optionList.get(0).equalsIgnoreCase("get")) {
             if (optionList.size() == 2) {
-                channel.sendMessage("You need to mention someone.").queue();
+                channel.sendMessageEmbeds(XorBot.NO_MENTIONED_USER).queue();
                 return;
             }
 
@@ -92,7 +93,7 @@ public class MoneyCommand implements Command {
 
         user = event.getMessage().getMentionedUsers().get(0);
         if (user == null) {
-            channel.sendMessage("You need to mention someone that is on this server.").queue();
+            channel.sendMessageEmbeds(XorBot.NO_MENTIONED_USER).queue();
             return;
         }
 

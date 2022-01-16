@@ -41,6 +41,7 @@ import java.sql.SQLException;
 public class XorBot {
 
     public static final MessageEmbed NO_PERMISSIONS_EMBED = new EmbedBuilder().setColor(Color.RED).setDescription("Brak uprawnień.").build();
+    public static final MessageEmbed NO_MENTIONED_USER = new EmbedBuilder().setColor(Color.RED).setDescription("You need to mention someone that is on this server.").build();
 
     public static void main(String[] args) throws LoginException {
         if (args.length == 0) {
