@@ -20,21 +20,27 @@ import com.zaxxer.hikari.HikariDataSource;
 import io.github.zrdzn.bot.xorbot.command.CommandRegistry;
 import io.github.zrdzn.bot.xorbot.command.commands.HelpCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.MoneyCommand;
+import io.github.zrdzn.bot.xorbot.command.commands.SlowmodeCommand;
 import io.github.zrdzn.bot.xorbot.listener.CommandListener;
 import io.github.zrdzn.bot.xorbot.user.UserRepository;
 import io.github.zrdzn.bot.xorbot.user.UserService;
 import io.github.zrdzn.bot.xorbot.user.XorUserService;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.apache.log4j.BasicConfigurator;
 import org.slf4j.Logger;
 
 import javax.security.auth.login.LoginException;
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class XorBot {
+
+    public static final MessageEmbed NO_PERMISSIONS_EMBED = new EmbedBuilder().setColor(Color.RED).setDescription("Brak uprawnień.").build();
 
     public static void main(String[] args) throws LoginException {
         if (args.length == 0) {
@@ -77,6 +83,7 @@ public class XorBot {
         logger.info("Registering default commands...");
         commandRegistry.register(new HelpCommand(commandRegistry));
         commandRegistry.register(new MoneyCommand(userService));
+        commandRegistry.register(new SlowmodeCommand());
         logger.info("Registered all default commands.");
 
         logger.info("Registering listeners...");
