@@ -48,22 +48,20 @@ public class XorBot {
             throw new IllegalArgumentException("Token was not provided.");
         }
 
-        String databaseConfig = "database.properties";
-        if (args.length == 2 && args[1].equalsIgnoreCase("dev")) {
-            databaseConfig = "test_database.properties";
-        }
+        boolean testBuild = args.length == 2 && args[1].equalsIgnoreCase("dev");
 
         JDABuilder jdaBuilder = JDABuilder.createDefault(args[0]);
 
         XorBot app = new XorBot();
-        app.run(jdaBuilder, databaseConfig);
+        app.run(jdaBuilder, testBuild);
     }
 
-    public void run(JDABuilder jdaBuilder, String databaseConfig) throws LoginException {
+    public void run(JDABuilder jdaBuilder, boolean testBuild) throws LoginException {
         BasicConfigurator.configure();
         Logger logger = JDALogger.getLog("DISCORD-BOT");
 
-        HikariDataSource dataSource = new HikariDataSource(new HikariConfig("/" + databaseConfig));
+        String databaseConfig = testBuild ? "test_database" : "database";
+        HikariDataSource dataSource = new HikariDataSource(new HikariConfig("/" + databaseConfig + ".properties"));
 
         String query = "CREATE TABLE IF NOT EXISTS users (" +
                 "id INT NOT NULL PRIMARY KEY AUTO_INCREMENT," +
@@ -93,7 +91,7 @@ public class XorBot {
         logger.info("Registered all default commands.");
 
         logger.info("Registering listeners...");
-        jdaBuilder.addEventListeners(new CommandListener(commandRegistry)).build();
+        jdaBuilder.addEventListeners(new CommandListener(commandRegistry, testBuild)).build();
         logger.info("Registered all listeners. JDA Built, ready to go.");
     }
 

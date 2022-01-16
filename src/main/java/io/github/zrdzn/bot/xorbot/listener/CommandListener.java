@@ -30,13 +30,26 @@ import java.util.concurrent.CompletableFuture;
 public class CommandListener extends ListenerAdapter {
 
     private final CommandRegistry commandRegistry;
+    private final boolean testBuild;
 
-    public CommandListener(CommandRegistry commandRegistry) {
+    public CommandListener(CommandRegistry commandRegistry, boolean testBuild) {
         this.commandRegistry = commandRegistry;
+        this.testBuild = testBuild;
     }
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        // If test build is true and channel does not equal test channel id, cancel
+        if (event.getChannel().getId().equalsIgnoreCase("872881918616686696")) {
+            if (!this.testBuild) {
+                return;
+            }
+        } else {
+            if (this.testBuild) {
+                return;
+            }
+        }
+
         if (event.getAuthor().isBot()) {
             return;
         }
