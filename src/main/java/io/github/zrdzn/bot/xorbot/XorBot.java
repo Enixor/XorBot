@@ -48,17 +48,22 @@ public class XorBot {
             throw new IllegalArgumentException("Token was not provided.");
         }
 
+        String databaseConfig = "database.properties";
+        if (args.length == 2 && args[1].equalsIgnoreCase("dev")) {
+            databaseConfig = "test_database.properties";
+        }
+
         JDABuilder jdaBuilder = JDABuilder.createDefault(args[0]);
 
         XorBot app = new XorBot();
-        app.run(jdaBuilder);
+        app.run(jdaBuilder, databaseConfig);
     }
 
-    public void run(JDABuilder jdaBuilder) throws LoginException {
+    public void run(JDABuilder jdaBuilder, String databaseConfig) throws LoginException {
         BasicConfigurator.configure();
         Logger logger = JDALogger.getLog("DISCORD-BOT");
 
-        HikariDataSource dataSource = new HikariDataSource(new HikariConfig("/database.properties"));
+        HikariDataSource dataSource = new HikariDataSource(new HikariConfig("/" + databaseConfig));
 
         String query = "CREATE TABLE IF NOT EXISTS users (" +
                 "id INT NOT NULL PRIMARY KEY AUTO_INCREMENT," +
