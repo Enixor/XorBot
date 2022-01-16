@@ -26,32 +26,17 @@ import io.github.zrdzn.bot.xorbot.listener.CommandListener;
 import io.github.zrdzn.bot.xorbot.user.UserRepository;
 import io.github.zrdzn.bot.xorbot.user.UserService;
 import io.github.zrdzn.bot.xorbot.user.XorUserService;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.apache.log4j.BasicConfigurator;
 import org.slf4j.Logger;
 
 import javax.security.auth.login.LoginException;
-import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.Instant;
 
 public class XorBot {
-
-    public static final MessageEmbed NO_PERMISSIONS_EMBED = new EmbedBuilder()
-        .setColor(Color.RED)
-        .setTimestamp(Instant.now())
-        .setDescription("No permissions.")
-        .build();
-    public static final MessageEmbed NO_MENTIONED_USER = new EmbedBuilder()
-        .setColor(Color.RED)
-        .setTimestamp(Instant.now())
-        .setDescription("You need to mention someone that is on this server.")
-        .build();
 
     public static void main(String[] args) throws LoginException {
         if (args.length == 0) {

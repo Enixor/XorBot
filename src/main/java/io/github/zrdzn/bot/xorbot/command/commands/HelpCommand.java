@@ -17,10 +17,10 @@ package io.github.zrdzn.bot.xorbot.command.commands;
 
 import io.github.zrdzn.bot.xorbot.command.Command;
 import io.github.zrdzn.bot.xorbot.command.CommandRegistry;
+import io.github.zrdzn.bot.xorbot.embed.EmbedHelper;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,9 +49,7 @@ public class HelpCommand implements Command {
 
     @Override
     public void execute(MessageReceivedEvent event, List<String> optionList) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-
-        embedBuilder.setTimestamp(Instant.now());
+        EmbedBuilder embedBuilder = EmbedHelper.info();
 
         this.commandRegistry.getCommands().values()
                 .forEach(command -> embedBuilder.addField(command.getName(), command.getDescription().orElse("<None>"), false));
