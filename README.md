@@ -1,6 +1,5 @@
 ## Todo
 #### Commands
-`!botinfo` - bot information\
 `!uptime` - bot uptime\
 `!avatar [user]` - shows user's avatar
 `!dog` - shows random dog picture\

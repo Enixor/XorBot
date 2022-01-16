@@ -18,6 +18,7 @@ package io.github.zrdzn.bot.xorbot;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.github.zrdzn.bot.xorbot.command.CommandRegistry;
+import io.github.zrdzn.bot.xorbot.command.commands.BotInformationCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.HelpCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.MoneyCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.SlowmodeCommand;
@@ -88,6 +89,7 @@ public class XorBot {
         commandRegistry.register(new HelpCommand(commandRegistry));
         commandRegistry.register(new MoneyCommand(userService));
         commandRegistry.register(new SlowmodeCommand());
+        commandRegistry.register(new BotInformationCommand(commandRegistry));
         logger.info("Registered all default commands.");
 
         logger.info("Registering listeners...");
