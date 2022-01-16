@@ -12,3 +12,5 @@ target/
 .gradle
 out/
 run/
+
+src/main/resources/database.properties
