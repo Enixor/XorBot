@@ -41,6 +41,10 @@ public class CommandListener extends ListenerAdapter {
             return;
         }
 
+        if (event.getMember() == null) {
+            return;
+        }
+
         String rawContent = event.getMessage().getContentRaw();
 
         if (!rawContent.startsWith("!")) {
