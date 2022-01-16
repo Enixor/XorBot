@@ -23,9 +23,9 @@ dependencies {
 
     implementation "org.mariadb.jdbc:mariadb-java-client:2.7.4"
 
-    implementation "com.zaxxer:HikariCP:5.0.0"
+    implementation "com.zaxxer:HikariCP:5.0.1"
 
-    implementation("net.dv8tion:JDA:4.3.0_309") {
+    implementation("net.dv8tion:JDA:4.4.0_352") {
         exclude module: 'opus-java'
     }
 }
