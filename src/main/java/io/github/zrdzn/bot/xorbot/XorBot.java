@@ -82,7 +82,7 @@ public class XorBot {
 
         CommandRegistry commandRegistry = new CommandRegistry();
 
-        UserService userService = new XorUserService(new UserRepository(dataSource));
+        UserService userService = new XorUserService(new UserRepository(dataSource, logger));
 
         logger.info("Registering default commands...");
         commandRegistry.register(new HelpCommand(commandRegistry));

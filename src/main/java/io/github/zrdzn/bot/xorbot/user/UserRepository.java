@@ -16,6 +16,7 @@
 package io.github.zrdzn.bot.xorbot.user;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.slf4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,9 +28,11 @@ import java.util.Optional;
 public class UserRepository {
 
     private final HikariDataSource dataSource;
+    private final Logger logger;
 
-    public UserRepository(HikariDataSource dataSource) {
+    public UserRepository(HikariDataSource dataSource, Logger logger) {
         this.dataSource = dataSource;
+        this.logger = logger;
     }
 
     public User save(long discordId, String username, long balance) throws UserCreationException {
@@ -57,7 +60,7 @@ public class UserRepository {
                 id = generatedKeys.getLong(1);
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            this.logger.error("Could not insert user into database.", exception);
             throw new UserCreationException(discordId, username, "Something went wrong while querying the database.");
         }
 
@@ -80,7 +83,7 @@ public class UserRepository {
 
             statement.executeUpdate();
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            this.logger.error("Could not delete user from database.", exception);
         }
     }
 
@@ -101,7 +104,7 @@ public class UserRepository {
                     .balance(result.getLong("balance"))
                     .build());
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            this.logger.error("Could not select user from database.", exception);
             return Optional.empty();
         }
     }
@@ -113,7 +116,7 @@ public class UserRepository {
 
             return statement.executeQuery().next();
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            this.logger.error("Could not select user from database.", exception);
             return false;
         }
     }
@@ -130,7 +133,7 @@ public class UserRepository {
 
             return result.getLong("balance");
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            this.logger.error("Could not select user's balance from database.", exception);
             return -1L;
         }
     }
@@ -171,7 +174,7 @@ public class UserRepository {
 
             return result.getLong("balance");
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            this.logger.error("Could not update user in database.", exception);
             return -1L;
         }
     }
