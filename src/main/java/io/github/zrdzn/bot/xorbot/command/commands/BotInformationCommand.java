@@ -49,7 +49,7 @@ public class BotInformationCommand implements Command {
 
     @Override
     public void execute(MessageReceivedEvent event, List<String> optionList) {
-        EmbedBuilder embedBuilder = EmbedHelper.info();
+        EmbedBuilder embedBuilder = EmbedHelper.info(event.getAuthor());
 
         embedBuilder.addField("Commands amount", String.valueOf(this.commandRegistry.getCommands().size()), false);
 
