@@ -16,6 +16,8 @@
 package io.github.zrdzn.bot.xorbot.log;
 
 import io.github.zrdzn.bot.xorbot.embed.EmbedHelper;
+import net.dv8tion.jda.api.audit.ActionType;
+import net.dv8tion.jda.api.audit.AuditLogEntry;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.guild.GuildBanEvent;
 import net.dv8tion.jda.api.events.guild.GuildUnbanEvent;
@@ -25,6 +27,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class LogListener extends ListenerAdapter {
 
@@ -115,12 +119,25 @@ public class LogListener extends ListenerAdapter {
             return;
         }
 
-        // TODO Need to load executor and reason from audit log
-        logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MEMBER_BAN)
-            .addField("Member", EmbedHelper.formatUser(event.getUser()), false)
-            //.addField("Executor", EmbedHelper.formatUser(executor), false)
-            //.addField("Reason", reason, false)
-            .build()).queue();
+        event.getGuild().retrieveAuditLogs()
+            .type(ActionType.BAN)
+            .limit(1)
+            .queue(entries -> {
+                Optional<AuditLogEntry> entryMaybe = entries.stream()
+                    .filter(entry -> entry.getTargetId().equals(event.getUser().getId()))
+                    .findFirst();
+                if (entryMaybe.isEmpty()) {
+                    return;
+                }
+
+                AuditLogEntry entry = entryMaybe.get();
+
+                logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MEMBER_BAN)
+                    .addField("Member", EmbedHelper.formatUser(event.getUser()), false)
+                    .addField("Executor", EmbedHelper.formatUser(entry.getUser()), false)
+                    .addField("Reason", entry.getReason(), false)
+                    .build()).queue();
+            });
     }
 
     @Override
@@ -130,11 +147,24 @@ public class LogListener extends ListenerAdapter {
             return;
         }
 
-        // TODO Need to load executor from audit log
-        logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MEMBER_UNBAN)
-            .addField("Member", EmbedHelper.formatUser(event.getUser()), false)
-            //.addField("Executor", EmbedHelper.formatUser(executor), false)
-            .build()).queue();
+        event.getGuild().retrieveAuditLogs()
+            .type(ActionType.UNBAN)
+            .limit(1)
+            .queue(entries -> {
+                Optional<AuditLogEntry> entryMaybe = entries.stream()
+                    .filter(entry -> entry.getTargetId().equals(event.getUser().getId()))
+                    .findFirst();
+                if (entryMaybe.isEmpty()) {
+                    return;
+                }
+
+                AuditLogEntry entry = entryMaybe.get();
+
+                logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MEMBER_UNBAN)
+                    .addField("Member", EmbedHelper.formatUser(event.getUser()), false)
+                    .addField("Executor", EmbedHelper.formatUser(entry.getUser()), false)
+                    .build()).queue();
+            });
     }
 
 }
