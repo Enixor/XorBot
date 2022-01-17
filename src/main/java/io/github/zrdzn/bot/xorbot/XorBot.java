@@ -22,7 +22,7 @@ import io.github.zrdzn.bot.xorbot.command.commands.BotInformationCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.HelpCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.MoneyCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.SlowmodeCommand;
-import io.github.zrdzn.bot.xorbot.listener.CommandListener;
+import io.github.zrdzn.bot.xorbot.command.CommandListener;
 import io.github.zrdzn.bot.xorbot.user.UserRepository;
 import io.github.zrdzn.bot.xorbot.user.UserService;
 import io.github.zrdzn.bot.xorbot.user.XorUserService;

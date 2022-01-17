@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.zrdzn.bot.xorbot.listener;
+package io.github.zrdzn.bot.xorbot.command;
 
-import io.github.zrdzn.bot.xorbot.command.Command;
-import io.github.zrdzn.bot.xorbot.command.CommandRegistry;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
