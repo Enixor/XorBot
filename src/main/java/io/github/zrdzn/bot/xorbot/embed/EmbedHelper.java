@@ -27,8 +27,8 @@ public class EmbedHelper {
 
     public static EmbedBuilder log(LogAction logAction) {
         return getEmbed(EmbedType.LOG)
-            .addField("Date", new Date(System.currentTimeMillis()).toString(), false)
-            .setFooter("Action: " + logAction.getDescription());
+            .addField("Action", logAction.getDescription(), true)
+            .addField("Date", new Date(System.currentTimeMillis()).toString(), true);
     }
 
     public static EmbedBuilder getEmbed(EmbedType type) {
