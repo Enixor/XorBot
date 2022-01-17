@@ -1,9 +1,12 @@
 package io.github.zrdzn.bot.xorbot.embed;
 
+import io.github.zrdzn.bot.xorbot.log.LogAction;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 
 import java.time.Instant;
+import java.util.Date;
 
 public class EmbedHelper {
 
@@ -22,8 +25,10 @@ public class EmbedHelper {
         return getEmbed(EmbedType.ERROR);
     }
 
-    public static EmbedBuilder log() {
-        return getEmbed(EmbedType.LOG);
+    public static EmbedBuilder log(LogAction logAction) {
+        return getEmbed(EmbedType.LOG)
+            .addField("Date", new Date(System.currentTimeMillis()).toString(), false)
+            .setFooter("Action: " + logAction.getDescription());
     }
 
     public static EmbedBuilder getEmbed(EmbedType type) {
@@ -33,6 +38,10 @@ public class EmbedHelper {
         embedBuilder.setColor(type.getColor());
 
         return embedBuilder;
+    }
+
+    public static String formatUser(User user) {
+        return String.format("%s#%s (%s)", user.getName(), user.getDiscriminator(), user.getId());
     }
 
 }

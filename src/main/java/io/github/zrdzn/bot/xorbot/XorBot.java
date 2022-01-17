@@ -17,12 +17,13 @@ package io.github.zrdzn.bot.xorbot;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.github.zrdzn.bot.xorbot.command.CommandListener;
 import io.github.zrdzn.bot.xorbot.command.CommandRegistry;
 import io.github.zrdzn.bot.xorbot.command.commands.BotInformationCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.HelpCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.MoneyCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.SlowmodeCommand;
-import io.github.zrdzn.bot.xorbot.command.CommandListener;
+import io.github.zrdzn.bot.xorbot.log.LogListener;
 import io.github.zrdzn.bot.xorbot.user.UserRepository;
 import io.github.zrdzn.bot.xorbot.user.UserService;
 import io.github.zrdzn.bot.xorbot.user.XorUserService;
@@ -87,7 +88,9 @@ public class XorBot {
         logger.info("Registered all default commands.");
 
         logger.info("Registering listeners...");
-        jdaBuilder.addEventListeners(new CommandListener(commandRegistry, testBuild)).build();
+        jdaBuilder.addEventListeners(new CommandListener(commandRegistry, testBuild),
+            // TODO Need to load log channel id from database or configuration file
+            new LogListener(932675543697064046L)).build();
         logger.info("Registered all listeners. JDA Built, ready to go.");
     }
 
