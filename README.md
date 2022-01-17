@@ -20,4 +20,3 @@ if reason is specified, duration must be after reason\
 - modlog on specified channel
 
 #### Other
-- embeds should have colors, and maybe authors/footers ([reference](https://github.com/zrdzn/XorBot/issues/2))
