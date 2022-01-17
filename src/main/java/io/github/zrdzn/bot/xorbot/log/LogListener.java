@@ -57,11 +57,28 @@ public class LogListener extends ListenerAdapter {
             return;
         }
 
-        // TODO Add cancel if not caused by user itself to leave guild (should check user id in audit log)
+        event.getGuild().retrieveAuditLogs()
+            .type(ActionType.KICK)
+            .limit(1)
+            .queue(entries -> {
+                Optional<AuditLogEntry> entryMaybe = entries.stream()
+                    .filter(entry -> entry.getTargetId().equals(event.getUser().getId()))
+                    .findFirst();
+                if (entryMaybe.isEmpty()) {
+                    logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MEMBER_LEAVE)
+                        .addField("Member", EmbedHelper.formatUser(event.getUser()), false)
+                        .build()).queue();
+                    return;
+                }
 
-        logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MEMBER_LEAVE)
-            .addField("Member", EmbedHelper.formatUser(event.getUser()), false)
-            .build()).queue();
+                AuditLogEntry entry = entryMaybe.get();
+
+                logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MEMBER_KICK)
+                    .addField("Member", EmbedHelper.formatUser(event.getUser()), false)
+                    .addField("Executor", EmbedHelper.formatUser(entry.getUser()), false)
+                    .addField("Reason", entry.getReason(), false)
+                    .build()).queue();
+            });
     }
 
     @Override

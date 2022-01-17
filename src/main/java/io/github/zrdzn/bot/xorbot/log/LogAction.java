@@ -10,6 +10,7 @@ public enum LogAction {
     MEMBER_WARN_REMOVE("Member unwarned"),
     MEMBER_MUTE("Member muted"),
     MEMBER_UNMUTE("Member unmuted"),
+    MEMBER_KICK("Member kicked"),
     MEMBER_BAN("Member banned"),
     MEMBER_UNBAN("Member unbanned");
 
