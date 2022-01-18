@@ -46,24 +46,4 @@ public class XorUserService implements UserService {
         return CompletableFuture.supplyAsync(() -> this.userRepository.existsByDiscordId(discordId));
     }
 
-    @Override
-    public CompletableFuture<Long> getMoney(long discordId) {
-        return CompletableFuture.supplyAsync(() -> this.userRepository.getMoneyByDiscordId(discordId));
-    }
-
-    @Override
-    public CompletableFuture<Long> setMoney(long discordId, long amount) {
-        return CompletableFuture.supplyAsync(() -> this.userRepository.setMoneyByDiscordId(discordId, amount, UserRepository.MoneyOperation.SET));
-    }
-
-    @Override
-    public CompletableFuture<Long> addMoney(long discordId, long amount) {
-        return CompletableFuture.supplyAsync(() -> this.userRepository.setMoneyByDiscordId(discordId, amount, UserRepository.MoneyOperation.ADD));
-    }
-
-    @Override
-    public CompletableFuture<Long> subtractMoney(long discordId, long amount) {
-        return CompletableFuture.supplyAsync(() -> this.userRepository.setMoneyByDiscordId(discordId, amount, UserRepository.MoneyOperation.SUBTRACT));
-    }
-
 }

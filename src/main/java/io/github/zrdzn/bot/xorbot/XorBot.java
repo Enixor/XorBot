@@ -22,6 +22,9 @@ import io.github.zrdzn.bot.xorbot.command.commands.BotInformationCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.HelpCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.MoneyCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.SlowmodeCommand;
+import io.github.zrdzn.bot.xorbot.economy.EconomyRepository;
+import io.github.zrdzn.bot.xorbot.economy.EconomyService;
+import io.github.zrdzn.bot.xorbot.economy.XorEconomyService;
 import io.github.zrdzn.bot.xorbot.listener.CommandListener;
 import io.github.zrdzn.bot.xorbot.user.UserRepository;
 import io.github.zrdzn.bot.xorbot.user.UserService;
@@ -79,9 +82,11 @@ public class XorBot {
 
         UserService userService = new XorUserService(new UserRepository(dataSource, logger));
 
+        EconomyService economyService = new XorEconomyService(new EconomyRepository(dataSource, logger));
+
         logger.info("Registering default commands...");
         commandRegistry.register(new HelpCommand(commandRegistry));
-        commandRegistry.register(new MoneyCommand(userService));
+        commandRegistry.register(new MoneyCommand(userService, economyService));
         commandRegistry.register(new SlowmodeCommand());
         commandRegistry.register(new BotInformationCommand(commandRegistry));
         logger.info("Registered all default commands.");
