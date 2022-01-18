@@ -15,6 +15,7 @@
  */
 package io.github.zrdzn.bot.xorbot;
 
+import com.google.common.eventbus.EventBus;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.github.zrdzn.bot.xorbot.command.CommandListener;
@@ -87,10 +88,13 @@ public class XorBot {
         commandRegistry.register(new BotInformationCommand(commandRegistry));
         logger.info("Registered all default commands.");
 
+        logger.info("Initializing event bus...");
+        EventBus eventBus = new EventBus("LogListener-EventBus");
+
         logger.info("Registering listeners...");
         jdaBuilder.addEventListeners(new CommandListener(commandRegistry, testBuild),
             // TODO Need to load log channel id from database or configuration file
-            new LogListener(932675543697064046L)).build();
+            new LogListener(eventBus, 932675543697064046L)).build();
         logger.info("Registered all listeners. JDA Built, ready to go.");
     }
 

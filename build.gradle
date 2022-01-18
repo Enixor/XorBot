@@ -25,6 +25,8 @@ dependencies {
 
     implementation "com.zaxxer:HikariCP:5.0.1"
 
+    implementation "com.google.guava:guava:31.0.1-jre"
+
     implementation("net.dv8tion:JDA:4.4.0_352") {
         exclude module: 'opus-java'
     }

@@ -15,7 +15,13 @@
  */
 package io.github.zrdzn.bot.xorbot.log;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import io.github.zrdzn.bot.xorbot.embed.EmbedHelper;
+import io.github.zrdzn.bot.xorbot.event.events.GuildMemberMuteEvent;
+import io.github.zrdzn.bot.xorbot.event.events.GuildMemberUnmuteEvent;
+import io.github.zrdzn.bot.xorbot.event.events.GuildMemberWarnAddEvent;
+import io.github.zrdzn.bot.xorbot.event.events.GuildMemberWarnRemoveEvent;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.audit.AuditLogEntry;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -34,8 +40,10 @@ public class LogListener extends ListenerAdapter {
 
     private final long logChannelId;
 
-    public LogListener(long logChannelId) {
+    public LogListener(EventBus eventBus, long logChannelId) {
         this.logChannelId = logChannelId;
+
+        eventBus.register(this);
     }
 
     @Override
@@ -110,24 +118,60 @@ public class LogListener extends ListenerAdapter {
             .build()).queue();
     }
 
-    // TODO Add custom events and maybe punishment service
-    /*
+    @Subscribe
     public void onGuildMemberWarnAdd(@NotNull GuildMemberWarnAddEvent event) {
+        MessageChannel logChannel = event.getTarget().getGuild().getTextChannelById(this.logChannelId);
+        if (logChannel == null) {
+            return;
+        }
 
+        logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MEMBER_WARN_ADD)
+            .addField("Member", EmbedHelper.formatUser(event.getTarget().getUser()), false)
+            .addField("Executor", EmbedHelper.formatUser(event.getExecutor().getUser()), false)
+            .addField("Reason", event.getReason(), false)
+            .build()).queue();
     }
 
-    public void onGuildMemberWarnRemove(@NotNull GuildMemberWarnAddEvent event) {
+    @Subscribe
+    public void onGuildMemberWarnRemove(@NotNull GuildMemberWarnRemoveEvent event) {
+        MessageChannel logChannel = event.getTarget().getGuild().getTextChannelById(this.logChannelId);
+        if (logChannel == null) {
+            return;
+        }
 
+        logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MEMBER_WARN_REMOVE)
+            .addField("Member", EmbedHelper.formatUser(event.getTarget().getUser()), false)
+            .addField("Executor", EmbedHelper.formatUser(event.getExecutor().getUser()), false)
+            .build()).queue();
     }
 
+    @Subscribe
     public void onGuildMemberMute(@NotNull GuildMemberMuteEvent event) {
+        MessageChannel logChannel = event.getTarget().getGuild().getTextChannelById(this.logChannelId);
+        if (logChannel == null) {
+            return;
+        }
 
+        logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MEMBER_MUTE)
+            .addField("Member", EmbedHelper.formatUser(event.getTarget().getUser()), false)
+            .addField("Executor", EmbedHelper.formatUser(event.getExecutor().getUser()), false)
+            .addField("Reason", event.getReason(), false)
+            .addField("Duration", event.getDurationString(), false)
+            .build()).queue();
     }
 
+    @Subscribe
     public void onGuildMemberUnmute(@NotNull GuildMemberUnmuteEvent event) {
+        MessageChannel logChannel = event.getTarget().getGuild().getTextChannelById(this.logChannelId);
+        if (logChannel == null) {
+            return;
+        }
 
+        logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MEMBER_UNMUTE)
+            .addField("Member", EmbedHelper.formatUser(event.getTarget().getUser()), false)
+            .addField("Executor", EmbedHelper.formatUser(event.getExecutor().getUser()), false)
+            .build()).queue();
     }
-    */
 
     @Override
     public void onGuildBan(@NotNull GuildBanEvent event) {
