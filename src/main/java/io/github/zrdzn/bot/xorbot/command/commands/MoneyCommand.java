@@ -16,6 +16,7 @@
 package io.github.zrdzn.bot.xorbot.command.commands;
 
 import io.github.zrdzn.bot.xorbot.command.Command;
+import io.github.zrdzn.bot.xorbot.economy.EconomyService;
 import io.github.zrdzn.bot.xorbot.embed.EmbedHelper;
 import io.github.zrdzn.bot.xorbot.user.UserService;
 import net.dv8tion.jda.api.entities.Member;
@@ -30,9 +31,11 @@ import java.util.concurrent.CompletableFuture;
 public class MoneyCommand implements Command {
 
     private final UserService userService;
+    private final EconomyService economyService;
 
-    public MoneyCommand(UserService userService) {
+    public MoneyCommand(UserService userService, EconomyService economyService) {
         this.userService = userService;
+        this.economyService = economyService;
     }
 
     @Override
@@ -56,7 +59,7 @@ public class MoneyCommand implements Command {
 
         Member member = event.getMember();
         if (optionList.isEmpty()) {
-            this.userService.getMoney(member.getIdLong()).thenAcceptAsync(money ->
+            this.economyService.getMoney(member.getIdLong()).thenAcceptAsync(money ->
                 channel.sendMessageEmbeds(EmbedHelper.info()
                     .addField("Account balance", String.valueOf(money), false)
                     .build()).queue());
@@ -101,11 +104,11 @@ public class MoneyCommand implements Command {
         this.userService.createUser(userId, member.getUser().getName(), 0L);
 
         CompletableFuture<Long> updatedAccountBalance = switch (optionList.get(0).toLowerCase(Locale.ROOT)) {
-            case "get" -> this.userService.getMoney(userId);
-            case "set" -> this.userService.setMoney(userId, amount);
-            case "add" -> this.userService.addMoney(userId, amount);
-            case "subtract" -> this.userService.subtractMoney(userId, amount);
-            default -> this.userService.getMoney(event.getAuthor().getIdLong());
+            case "get" -> this.economyService.getMoney(userId);
+            case "set" -> this.economyService.setMoney(userId, amount);
+            case "add" -> this.economyService.addMoney(userId, amount);
+            case "subtract" -> this.economyService.subtractMoney(userId, amount);
+            default -> this.economyService.getMoney(event.getAuthor().getIdLong());
         };
 
         updatedAccountBalance.thenAccept(money ->
