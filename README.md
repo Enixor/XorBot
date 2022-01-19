@@ -13,10 +13,9 @@ if reason is specified, duration must be after reason\
 `!unmute <user>` - unmutes user\
 `!warn <user> [reason]` - adds warning to user\
 `!warns [user]` - lists all warnings for user\
-`!delwarn <user> <id>` - deletes specified warning\
+`!delwarn <user> <id>` - deletes specified warning
 
 
 #### Events
-- modlog on specified channel
 
 #### Other
