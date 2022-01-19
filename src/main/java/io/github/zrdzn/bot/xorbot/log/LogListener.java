@@ -122,7 +122,6 @@ public class LogListener extends ListenerAdapter {
 
         Message message = messageMaybe.get();
 
-        // TODO Need to create cache with user reference and message content
         logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MESSAGE_DELETE)
             .addField("Member", EmbedHelper.formatUser(message.getAuthor()), false)
             .addField("Message", message.getContentRaw(), false)
@@ -144,7 +143,6 @@ public class LogListener extends ListenerAdapter {
 
         Message message = messageMaybe.get();
 
-        // TODO Need to create cache with user reference and message content
         logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MESSAGE_EDIT)
             .addField("Member", EmbedHelper.formatUser(event.getAuthor()), false)
             .addField("Old message", message.getContentRaw(), false)
