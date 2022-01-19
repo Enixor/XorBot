@@ -17,6 +17,7 @@ package io.github.zrdzn.bot.xorbot.log;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import io.github.zrdzn.bot.xorbot.cache.MessageCache;
 import io.github.zrdzn.bot.xorbot.embed.EmbedHelper;
 import io.github.zrdzn.bot.xorbot.event.events.GuildMemberMuteEvent;
 import io.github.zrdzn.bot.xorbot.event.events.GuildMemberUnmuteEvent;
@@ -24,11 +25,13 @@ import io.github.zrdzn.bot.xorbot.event.events.GuildMemberWarnAddEvent;
 import io.github.zrdzn.bot.xorbot.event.events.GuildMemberWarnRemoveEvent;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.audit.AuditLogEntry;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.guild.GuildBanEvent;
 import net.dv8tion.jda.api.events.guild.GuildUnbanEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -38,12 +41,27 @@ import java.util.Optional;
 
 public class LogListener extends ListenerAdapter {
 
+    private final MessageCache cachedMessages;
     private final long logChannelId;
 
     public LogListener(EventBus eventBus, long logChannelId) {
+        this.cachedMessages = new MessageCache(5);
         this.logChannelId = logChannelId;
 
         eventBus.register(this);
+    }
+
+    @Override
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) {
+            return;
+        }
+
+        if (event.getMember() == null) {
+            return;
+        }
+
+        this.cachedMessages.store(event.getMessage());
     }
 
     @Override
@@ -96,10 +114,18 @@ public class LogListener extends ListenerAdapter {
             return;
         }
 
+        Optional<Message> messageMaybe = this.cachedMessages.find(storedMessage ->
+            storedMessage.getId().equals(event.getMessageId()));
+        if (messageMaybe.isEmpty()) {
+            return;
+        }
+
+        Message message = messageMaybe.get();
+
         // TODO Need to create cache with user reference and message content
         logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MESSAGE_DELETE)
-            //.addField("Member", EmbedHelper.formatUser(event.getUser()), false)
-            //.addField("Message", message, false)
+            .addField("Member", EmbedHelper.formatUser(message.getAuthor()), false)
+            .addField("Message", message.getContentRaw(), false)
             .build()).queue();
     }
 
@@ -110,10 +136,18 @@ public class LogListener extends ListenerAdapter {
             return;
         }
 
+        Optional<Message> messageMaybe = this.cachedMessages.find(storedMessage ->
+            storedMessage.getId().equals(event.getMessageId()));
+        if (messageMaybe.isEmpty()) {
+            return;
+        }
+
+        Message message = messageMaybe.get();
+
         // TODO Need to create cache with user reference and message content
         logChannel.sendMessageEmbeds(EmbedHelper.log(LogAction.MESSAGE_EDIT)
             .addField("Member", EmbedHelper.formatUser(event.getAuthor()), false)
-            //.addField("Old message", oldMessage, false)
+            .addField("Old message", message.getContentRaw(), false)
             .addField("New message", event.getMessage().getContentRaw(), false)
             .build()).queue();
     }
