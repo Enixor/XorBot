@@ -22,14 +22,40 @@ import java.util.Optional;
 
 public interface PunishmentEvent {
 
+    /**
+     * Gets the member who got punished.
+     *
+     * @return punished member
+     */
     Member getTarget();
 
+    /**
+     * Gets the member who punished target.
+     *
+     * @return executor member who punished
+     */
     Member getExecutor();
 
+    /**
+     * Gets the reason for the punishment.
+     *
+     * @return punishment reason
+     */
     String getReason();
 
+    /**
+     * Gets the duration for the punishment. If no duration is present,
+     * empty Optional will be returned.
+     *
+     * @return duration if available
+     */
     Optional<Duration> getDuration();
 
+    /**
+     * Gets the duration parsed to string.
+     *
+     * @return parsed duration, if not implemented - default value will be used
+     */
     default String getDurationString() {
         Optional<Duration> durationMaybe = this.getDuration();
         if (durationMaybe.isPresent()) {
