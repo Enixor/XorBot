@@ -56,43 +56,4 @@ public interface UserService {
      */
     CompletableFuture<Boolean> userExists(long discordId);
 
-    /**
-     * Gets user money by discord id in the database.
-     *
-     * @param discordId an discord id of the searched user
-     *
-     * @return current account balance
-     */
-    CompletableFuture<Long> getMoney(long discordId);
-
-    /**
-     * Sets money for user by discord id in the database.
-     *
-     * @param discordId an discord id of the searched user
-     * @param amount an amount of money that should be added to the user
-     *
-     * @return new account balance, if -1 it means something went wrong
-     */
-    CompletableFuture<Long> setMoney(long discordId, long amount);
-
-    /**
-     * Adds money to user by discord id in the database.
-     *
-     * @param discordId an discord id of the searched user
-     * @param amount an amount of money that should be added to the user
-     *
-     * @return new account balance, if -1 it means something went wrong
-     */
-    CompletableFuture<Long> addMoney(long discordId, long amount);
-
-    /**
-     * Subtracts money from user by discord id in the database.
-     *
-     * @param discordId an discord id of the searched user
-     * @param amount an amount of money that should be subtract from the user
-     *
-     * @return new account balance, if -1 it means something went wrong
-     */
-    CompletableFuture<Long> subtractMoney(long discordId, long amount);
-
 }
