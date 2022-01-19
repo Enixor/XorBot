@@ -49,7 +49,7 @@ public class HelpCommand implements Command {
 
     @Override
     public void execute(MessageReceivedEvent event, List<String> optionList) {
-        EmbedBuilder embedBuilder = EmbedHelper.info();
+        EmbedBuilder embedBuilder = EmbedHelper.info(event.getAuthor());
 
         this.commandRegistry.getCommands().values()
                 .forEach(command -> embedBuilder.addField(command.getName(), command.getDescription().orElse("<None>"), false));

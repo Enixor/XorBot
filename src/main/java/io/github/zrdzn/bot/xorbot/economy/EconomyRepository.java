@@ -40,11 +40,12 @@ public class EconomyRepository {
             return -1L;
         }
 
-        String updateQuery = null;
+        String updateQuery;
         switch (operation) {
             case SET -> updateQuery = "UPDATE users SET balance = ? WHERE discord_id = ?;";
             case ADD -> updateQuery = "UPDATE users SET balance = balance + ? WHERE discord_id = ?;";
             case SUBTRACT -> updateQuery = "UPDATE users SET balance = balance - ? WHERE discord_id = ?;";
+            default -> updateQuery = null;
         }
 
         if (updateQuery == null) {

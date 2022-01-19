@@ -15,17 +15,19 @@
  */
 package io.github.zrdzn.bot.xorbot;
 
+import com.google.common.eventbus.EventBus;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.github.zrdzn.bot.xorbot.command.CommandListener;
 import io.github.zrdzn.bot.xorbot.command.CommandRegistry;
 import io.github.zrdzn.bot.xorbot.command.commands.BotInformationCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.HelpCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.MoneyCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.SlowmodeCommand;
+import io.github.zrdzn.bot.xorbot.log.LogListener;
 import io.github.zrdzn.bot.xorbot.economy.EconomyRepository;
 import io.github.zrdzn.bot.xorbot.economy.EconomyService;
 import io.github.zrdzn.bot.xorbot.economy.XorEconomyService;
-import io.github.zrdzn.bot.xorbot.listener.CommandListener;
 import io.github.zrdzn.bot.xorbot.user.UserRepository;
 import io.github.zrdzn.bot.xorbot.user.UserService;
 import io.github.zrdzn.bot.xorbot.user.XorUserService;
@@ -35,9 +37,12 @@ import org.apache.log4j.BasicConfigurator;
 import org.slf4j.Logger;
 
 import javax.security.auth.login.LoginException;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class XorBot {
 
@@ -91,8 +96,31 @@ public class XorBot {
         commandRegistry.register(new BotInformationCommand(commandRegistry));
         logger.info("Registered all default commands.");
 
+        logger.info("Initializing event bus...");
+        EventBus eventBus = new EventBus("LogListener-EventBus");
+
+        logger.info("Reading bot configuration file...");
+        Properties configuration = new Properties();
+        String fileName = "xorbot.config";
+        try (FileInputStream inputStream = new FileInputStream(fileName)) {
+            configuration.load(inputStream);
+        } catch (IOException ex) {
+            logger.error("Could not read configuration file.");
+            return;
+        }
+
+        long logChannelId;
+        try {
+            logChannelId = Long.parseLong(configuration.getProperty("channel_log_id"));
+        } catch (NumberFormatException exception) {
+            logger.error("channel_log_id is not a valid long number.");
+            return;
+        }
+        logger.info("Using channel with id {} as log channel.", logChannelId);
+
         logger.info("Registering listeners...");
-        jdaBuilder.addEventListeners(new CommandListener(commandRegistry, testBuild)).build();
+        jdaBuilder.addEventListeners(new CommandListener(commandRegistry, testBuild),
+            new LogListener(eventBus, logChannelId)).build();
         logger.info("Registered all listeners. JDA Built, ready to go.");
     }
 

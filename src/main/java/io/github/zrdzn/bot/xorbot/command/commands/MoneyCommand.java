@@ -60,7 +60,7 @@ public class MoneyCommand implements Command {
         Member member = event.getMember();
         if (optionList.isEmpty()) {
             this.economyService.getMoney(member.getIdLong()).thenAcceptAsync(money ->
-                channel.sendMessageEmbeds(EmbedHelper.info()
+                channel.sendMessageEmbeds(EmbedHelper.info(event.getAuthor())
                     .addField("Account balance", String.valueOf(money), false)
                     .build()).queue());
 
@@ -112,7 +112,7 @@ public class MoneyCommand implements Command {
         };
 
         updatedAccountBalance.thenAccept(money ->
-            channel.sendMessageEmbeds(EmbedHelper.info()
+            channel.sendMessageEmbeds(EmbedHelper.info(event.getAuthor())
                 .addField("Account balance", String.valueOf(money < 0 ? 0L : money), false)
                 .build()).queue());
     }
