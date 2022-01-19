@@ -28,7 +28,6 @@ import io.github.zrdzn.bot.xorbot.log.LogListener;
 import io.github.zrdzn.bot.xorbot.economy.EconomyRepository;
 import io.github.zrdzn.bot.xorbot.economy.EconomyService;
 import io.github.zrdzn.bot.xorbot.economy.XorEconomyService;
-import io.github.zrdzn.bot.xorbot.listener.CommandListener;
 import io.github.zrdzn.bot.xorbot.user.UserRepository;
 import io.github.zrdzn.bot.xorbot.user.UserService;
 import io.github.zrdzn.bot.xorbot.user.XorUserService;
