@@ -29,7 +29,7 @@ public interface UserService {
      *
      * @return newly created user
      */
-    CompletableFuture<User> createUser(long discordId, String username, long balance);
+    CompletableFuture<Optional<User>> createUser(long discordId, String username, long balance);
 
     /**
      * Removes User by discord id from the database.

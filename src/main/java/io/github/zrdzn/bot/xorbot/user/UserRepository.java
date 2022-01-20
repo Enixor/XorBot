@@ -23,6 +23,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UserRepository {
@@ -35,12 +37,11 @@ public class UserRepository {
         this.logger = logger;
     }
 
-    public User save(long discordId, String username, long balance) throws UserCreationException {
+    public boolean save(long discordId, String username, long balance) throws UserCreationException {
         if (this.existsByDiscordId(discordId)) {
-            return this.findByDiscordId(discordId).orElseThrow(() -> new IllegalStateException("Cannot find user that exists in the database."));
+            return false;
         }
 
-        long id;
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("INSERT INTO users (discord_id, username, balance) VALUES (?, ?, ?);",
                      Statement.RETURN_GENERATED_KEYS)) {
@@ -49,41 +50,52 @@ public class UserRepository {
             statement.setLong(3, balance);
 
             int affectedRows = statement.executeUpdate();
-            if (affectedRows != 1) {
-                throw new UserCreationException(discordId, username, "Affected " + affectedRows + " rows but should affect only 1.");
-            }
 
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (!generatedKeys.next()) {
-                    throw new UserCreationException(discordId, username, "Something went wrong while retrieving user id from database.");
-                }
-                id = generatedKeys.getLong(1);
-            }
+            return affectedRows == 1;
         } catch (SQLException exception) {
             this.logger.error("Could not insert user into database.", exception);
             throw new UserCreationException(discordId, username, "Something went wrong while querying the database.");
         }
-
-        return XorUser.builder()
-                .id(id)
-                .discordId(discordId)
-                .username(username)
-                .balance(balance)
-                .build();
     }
 
-    public void deleteByDiscordId(long discordId) {
+    public List<User> list() {
+        List<User> users = new ArrayList<>();
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM users;")) {
+            ResultSet result = statement.executeQuery();
+            if (result == null) {
+                return users;
+            }
+
+            if (result.next()) {
+                users.add(XorUser.builder()
+                    .id(result.getLong("id"))
+                    .discordId(result.getLong("discord_id"))
+                    .username(result.getString("username"))
+                    .balance(result.getLong("balance"))
+                    .build());
+            }
+
+            return users;
+        } catch (SQLException exception) {
+            this.logger.error("Could not select user from database.", exception);
+            return users;
+        }
+    }
+
+    public boolean deleteByDiscordId(long discordId) {
         if (!this.existsByDiscordId(discordId)) {
-            return;
+            return false;
         }
 
         try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("DELETE FROM users WHERE discord_id = ?;")) {
+             PreparedStatement statement = connection.prepareStatement("DELETE FROM users WHERE discord_id = ? LIMIT 1;")) {
             statement.setLong(1, discordId);
 
-            statement.executeUpdate();
+            return statement.executeUpdate() == 1;
         } catch (SQLException exception) {
             this.logger.error("Could not delete user from database.", exception);
+            return false;
         }
     }
 
