@@ -15,35 +15,83 @@
  */
 package io.github.zrdzn.bot.xorbot.user;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class XorUserService implements UserService {
 
+    private final List<User> users;
     private final UserRepository userRepository;
 
     public XorUserService(UserRepository userRepository) {
+        this.users = new ArrayList<>();
         this.userRepository = userRepository;
     }
 
+    public void loadUsers() {
+        this.users.addAll(this.userRepository.list());
+    }
+
     @Override
-    public CompletableFuture<User> createUser(long discordId, String username, long balance) {
-        return CompletableFuture.supplyAsync(() -> this.userRepository.save(discordId, username, balance));
+    public CompletableFuture<Optional<User>> createUser(long discordId, String username, long balance) {
+        return CompletableFuture.supplyAsync(() -> {
+            if (this.userRepository.save(discordId, username, balance)) {
+                return Optional.empty();
+            }
+
+            this.userRepository.findByDiscordId(discordId).ifPresent(this.users::add);
+
+            return this.users.stream()
+                .filter(user -> user.getId() == discordId)
+                .findAny();
+        });
     }
 
     @Override
     public CompletableFuture<Void> removeUser(long discordId) {
-        return CompletableFuture.runAsync(() -> this.userRepository.deleteByDiscordId(discordId));
+        return CompletableFuture.runAsync(() -> {
+            if (this.userRepository.deleteByDiscordId(discordId)) {
+                return;
+            }
+
+            this.users.removeIf(user -> user.getId() == discordId);
+        });
     }
 
     @Override
     public CompletableFuture<Optional<User>> getUser(long discordId) {
-        return CompletableFuture.supplyAsync(() -> this.userRepository.findByDiscordId(discordId));
+        return CompletableFuture.supplyAsync(() -> {
+            Optional<User> userMaybe = this.users.stream()
+                .filter(user -> user.getId() == discordId)
+                .findAny();
+            if (userMaybe.isPresent()) {
+                return userMaybe;
+            }
+
+            return this.userRepository.findByDiscordId(discordId);
+        });
     }
 
     @Override
     public CompletableFuture<Boolean> userExists(long discordId) {
-        return CompletableFuture.supplyAsync(() -> this.userRepository.existsByDiscordId(discordId));
+        return CompletableFuture.supplyAsync(() -> {
+            if (this.users.stream().noneMatch(user -> user.getId() == discordId)) {
+                Optional<User> userMaybe = this.userRepository.findByDiscordId(discordId);
+                if (userMaybe.isPresent()) {
+                    this.users.add(userMaybe.get());
+                    return true;
+                }
+            }
+
+            return false;
+        });
+    }
+
+    public List<User> getCachedUsers() {
+        return Collections.unmodifiableList(this.users);
     }
 
 }

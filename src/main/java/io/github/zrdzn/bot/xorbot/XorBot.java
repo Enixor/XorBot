@@ -24,12 +24,11 @@ import io.github.zrdzn.bot.xorbot.command.commands.BotInformationCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.HelpCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.MoneyCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.SlowmodeCommand;
-import io.github.zrdzn.bot.xorbot.log.LogListener;
 import io.github.zrdzn.bot.xorbot.economy.EconomyRepository;
 import io.github.zrdzn.bot.xorbot.economy.EconomyService;
 import io.github.zrdzn.bot.xorbot.economy.XorEconomyService;
+import io.github.zrdzn.bot.xorbot.log.LogListener;
 import io.github.zrdzn.bot.xorbot.user.UserRepository;
-import io.github.zrdzn.bot.xorbot.user.UserService;
 import io.github.zrdzn.bot.xorbot.user.XorUserService;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.internal.utils.JDALogger;
@@ -85,7 +84,9 @@ public class XorBot {
 
         CommandRegistry commandRegistry = new CommandRegistry();
 
-        UserService userService = new XorUserService(new UserRepository(dataSource, logger));
+        XorUserService userService = new XorUserService(new UserRepository(dataSource, logger));
+        userService.loadUsers();
+        logger.info("Loaded {} users from the database.", userService.getCachedUsers().size());
 
         EconomyService economyService = new XorEconomyService(new EconomyRepository(dataSource, logger));
 
