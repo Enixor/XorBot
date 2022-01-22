@@ -28,6 +28,8 @@ import io.github.zrdzn.bot.xorbot.economy.EconomyRepository;
 import io.github.zrdzn.bot.xorbot.economy.EconomyService;
 import io.github.zrdzn.bot.xorbot.economy.XorEconomyService;
 import io.github.zrdzn.bot.xorbot.log.LogListener;
+import io.github.zrdzn.bot.xorbot.punishment.PunishmentRepository;
+import io.github.zrdzn.bot.xorbot.punishment.XorPunishmentService;
 import io.github.zrdzn.bot.xorbot.user.UserRepository;
 import io.github.zrdzn.bot.xorbot.user.XorUserService;
 import net.dv8tion.jda.api.JDABuilder;
@@ -65,20 +67,48 @@ public class XorBot {
         String databaseConfig = testBuild ? "test_database" : "database";
         HikariDataSource dataSource = new HikariDataSource(new HikariConfig("/" + databaseConfig + ".properties"));
 
-        String query = "CREATE TABLE IF NOT EXISTS users (" +
+        try (Connection connection = dataSource.getConnection()) {
+            String usersQuery = "CREATE TABLE IF NOT EXISTS users (" +
                 "id INT NOT NULL PRIMARY KEY AUTO_INCREMENT," +
                 "discord_id VARCHAR(20) NOT NULL UNIQUE KEY," +
                 "username VARCHAR(32) NOT NULL," +
                 "balance BIGINT UNSIGNED DEFAULT 0);";
-        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+
+            PreparedStatement usersUpdate = connection.prepareStatement(usersQuery);
+
             logger.info("Checking if table 'users' exist...");
-            if (statement.executeUpdate() == 0) {
+
+            if (usersUpdate.executeUpdate() == 0) {
                 logger.info("Table 'users' exists, skipping...");
             } else {
                 logger.info("Created new table 'users'.");
             }
+
+            usersUpdate.closeOnCompletion();
+
+            String punishmentsQuery = "CREATE TABLE IF NOT EXISTS punishments (" +
+                "id INT NOT NULL PRIMARY KEY AUTO_INCREMENT," +
+                "target_id VARCHAR(20) NOT NULL," +
+                "target_name VARCHAR(32) NOT NULL," +
+                "type VARCHAR(16) NOT NULL," +
+                "executor_id VARCHAR(20) NOT NULL," +
+                "executor_name VARCHAR(32) NOT NULL," +
+                "reason VARCHAR(255) NOT NULL," +
+                "duration TIMESTAMP);";
+
+            PreparedStatement punishmentsUpdate = connection.prepareStatement(punishmentsQuery);
+
+            logger.info("Checking if table 'punishments' exist...");
+
+            if (punishmentsUpdate.executeUpdate() == 0) {
+                logger.info("Table 'punishments' exists, skipping...");
+            } else {
+                logger.info("Created new table 'punishments'.");
+            }
+
+            punishmentsUpdate.closeOnCompletion();
         } catch (SQLException exception) {
-            logger.error("Could not create-if-not-exists table 'users'. Something went wrong.", exception);
+            logger.error("Could not create-if-not-exists table 'users' or 'punishments'. Something went wrong.", exception);
             return;
         }
 
@@ -87,6 +117,10 @@ public class XorBot {
         XorUserService userService = new XorUserService(new UserRepository(dataSource, logger));
         userService.loadUsers();
         logger.info("Loaded {} users from the database.", userService.getCachedUsers().size());
+
+        XorPunishmentService punishmentService = new XorPunishmentService(new PunishmentRepository(dataSource, logger));
+        punishmentService.loadPunishments();
+        logger.info("Loaded {} punishments from the database.", punishmentService.getCachedPunishments().size());
 
         EconomyService economyService = new XorEconomyService(new EconomyRepository(dataSource, logger));
 
