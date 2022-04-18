@@ -40,6 +40,11 @@ public class PunishmentRepository {
 
     public boolean save(long targetId, String targetName, PunishmentType type, long executorId,
                         String executorName, String reason, Duration duration) throws UserCreationException {
+        long durationMillis = -1L;
+        if (duration != null) {
+            durationMillis = duration.toMillis();
+        }
+
         String insertQuery = "INSERT INTO punishments (target_id, target_name, type, executor_id, executor_name, reason, duration)" +
             "VALUES (?, ?, ?, ?, ?, ?, ?);";
 
@@ -51,7 +56,7 @@ public class PunishmentRepository {
             statement.setLong(4, executorId);
             statement.setString(5, executorName);
             statement.setString(6, reason);
-            statement.setLong(7, duration.toMillis());
+            statement.setLong(7, durationMillis);
 
             int affectedRows = statement.executeUpdate();
 

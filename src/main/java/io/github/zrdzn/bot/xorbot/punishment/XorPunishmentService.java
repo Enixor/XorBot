@@ -15,9 +15,10 @@
  */
 package io.github.zrdzn.bot.xorbot.punishment;
 
+import org.slf4j.Logger;
+
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -26,10 +27,12 @@ public class XorPunishmentService implements PunishmentService {
 
     public static final String DEFAULT_REASON = "Broken rules.";
 
+    private final Logger logger;
     private final List<Punishment> punishments;
     private final PunishmentRepository punishmentRepository;
 
-    public XorPunishmentService(PunishmentRepository punishmentRepository) {
+    public XorPunishmentService(Logger logger, PunishmentRepository punishmentRepository) {
+        this.logger = logger;
         this.punishments = new ArrayList<>();
         this.punishmentRepository = punishmentRepository;
     }
@@ -48,7 +51,14 @@ public class XorPunishmentService implements PunishmentService {
     public CompletableFuture<Optional<Punishment>> createPunishment(long targetId, String targetName, PunishmentType type, long executorId,
                                                                  String executorName, String reason, Duration duration) {
         return CompletableFuture.supplyAsync(() -> {
-            if (!this.punishmentRepository.save(targetId, targetName, type, executorId, executorName, reason, duration)) {
+            String finalReason = reason;
+
+            if (finalReason == null) {
+                finalReason = DEFAULT_REASON;
+            }
+
+            if (!this.punishmentRepository.save(targetId, targetName, type, executorId, executorName, finalReason, duration)) {
+                this.logger.error("Could not save new punishment to the repository.");
                 return Optional.empty();
             }
 
@@ -105,7 +115,7 @@ public class XorPunishmentService implements PunishmentService {
     }
 
     public List<Punishment> getCachedPunishments() {
-        return Collections.unmodifiableList(this.punishments);
+        return this.punishments;
     }
 
 }
