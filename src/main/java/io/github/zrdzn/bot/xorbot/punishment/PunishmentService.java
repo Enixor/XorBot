@@ -22,6 +22,21 @@ import java.util.concurrent.CompletableFuture;
 public interface PunishmentService {
 
     /**
+     * Creates new punishment with default reason and adds it to the database.
+     *
+     * @param targetId a discord id of the target
+     * @param targetName a discord name of the target
+     * @param type a type of the punishment
+     * @param executorId a discord id of the executor
+     * @param executorName a discord name of the executor
+     * @param duration a duration of the punishment
+     *
+     * @return newly created punishment
+     */
+    CompletableFuture<Optional<Punishment>> createPunishment(long targetId, String targetName, PunishmentType type,
+                                                             long executorId, String executorName, Duration duration);
+
+    /**
      * Creates new punishment and adds it to the database.
      *
      * @param targetId a discord id of the target

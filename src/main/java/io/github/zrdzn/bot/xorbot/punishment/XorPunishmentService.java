@@ -24,6 +24,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class XorPunishmentService implements PunishmentService {
 
+    public static final String DEFAULT_REASON = "Broken rules.";
+
     private final List<Punishment> punishments;
     private final PunishmentRepository punishmentRepository;
 
@@ -34,6 +36,12 @@ public class XorPunishmentService implements PunishmentService {
 
     public void loadPunishments() {
         this.punishments.addAll(this.punishmentRepository.list());
+    }
+
+    @Override
+    public CompletableFuture<Optional<Punishment>> createPunishment(long targetId, String targetName, PunishmentType type,
+                                                                    long executorId, String executorName, Duration duration) {
+        return this.createPunishment(targetId, targetName, type, executorId, executorName, DEFAULT_REASON, duration);
     }
 
     @Override
