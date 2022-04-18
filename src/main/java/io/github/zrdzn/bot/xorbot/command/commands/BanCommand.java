@@ -86,16 +86,18 @@ public class BanCommand implements Command {
             reason = null;
         }
 
+        String finalReason = reason;
         this.punishmentService.createPunishment(target.getIdLong(), target.getUser().getName(), PunishmentType.BAN,
-                member.getIdLong(), member.getUser().getName(), reason, null);
-            /*.thenAccept(punishment -> {
-                if (punishment.isPresent()) {
+                member.getIdLong(), member.getUser().getName(), finalReason, null)
+            .thenAccept(punishment -> {
+                if (punishment.isEmpty()) {
                     channel.sendMessageEmbeds(EmbedHelper.COULD_NOT_PUNISH).queue();
                     return;
                 }
 
+                target.ban(0, finalReason).queue();
                 channel.sendMessageEmbeds(reply).queue();
-            });*/
+            });
     }
 
 }
