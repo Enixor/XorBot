@@ -20,6 +20,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.github.zrdzn.bot.xorbot.command.CommandListener;
 import io.github.zrdzn.bot.xorbot.command.CommandRegistry;
+import io.github.zrdzn.bot.xorbot.command.commands.BanCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.BotInformationCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.HelpCommand;
 import io.github.zrdzn.bot.xorbot.command.commands.MoneyCommand;
@@ -94,7 +95,7 @@ public class XorBot {
                 "executor_id VARCHAR(20) NOT NULL," +
                 "executor_name VARCHAR(32) NOT NULL," +
                 "reason VARCHAR(255) NOT NULL," +
-                "duration TIMESTAMP);";
+                "duration LONG);";
 
             PreparedStatement punishmentsUpdate = connection.prepareStatement(punishmentsQuery);
 
@@ -118,7 +119,7 @@ public class XorBot {
         userService.loadUsers();
         logger.info("Loaded {} users from the database.", userService.getCachedUsers().size());
 
-        XorPunishmentService punishmentService = new XorPunishmentService(new PunishmentRepository(dataSource, logger));
+        XorPunishmentService punishmentService = new XorPunishmentService(logger, new PunishmentRepository(dataSource, logger));
         punishmentService.loadPunishments();
         logger.info("Loaded {} punishments from the database.", punishmentService.getCachedPunishments().size());
 
@@ -129,6 +130,7 @@ public class XorBot {
         commandRegistry.register(new MoneyCommand(userService, economyService));
         commandRegistry.register(new SlowmodeCommand());
         commandRegistry.register(new BotInformationCommand(commandRegistry));
+        commandRegistry.register(new BanCommand(commandRegistry, punishmentService));
         logger.info("Registered all default commands.");
 
         logger.info("Initializing event bus...");
