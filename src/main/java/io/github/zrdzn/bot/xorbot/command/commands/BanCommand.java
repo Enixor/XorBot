@@ -70,8 +70,6 @@ public class BanCommand implements Command {
         }
 
         Member target = event.getMessage().getMentionedMembers().get(0);
-        event.getMessage().getMentionedMembers().forEach(m -> channel
-            .sendMessage("mentioned member: " + m.getUser().getName()).queue());
         if (target == null) {
             channel.sendMessageEmbeds(EmbedHelper.NO_MENTIONED_USER).queue();
             return;
@@ -80,9 +78,6 @@ public class BanCommand implements Command {
         MessageEmbed reply = EmbedHelper.moderation(member.getUser())
             .setDescription("User has been successfully banned.")
             .build();
-
-        channel.sendMessage("is option list empty? " + optionList.isEmpty()).queue();
-        channel.sendMessage("tostr: " + optionList).queue();
 
         String reason;
         try {
